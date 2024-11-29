@@ -18,7 +18,7 @@ A demo that runs:
 * Persistent Volume for DC deployments and configuration
 
   - cd container/pods
-  - oc create -f persistent-volume.yaml
+  - oc create -f dc-persistent-volume.yaml
   - oc create -f kubernetes-dc-pod.yaml
   - oc rsync startup/dc/v1/ domain-controller:/tmp/domain-init
   - oc delete pod domain-controller
@@ -62,15 +62,15 @@ We are here updating the deployments, log to the DC, run the CLI script to updat
 
 * oc rsync startup/dc/v2/ domain-controller:/tmp/domain-init
 * install the cli plugin for kubectl: https://github.com/jmesnil/kubectl-jboss-cli/tree/main
-* kubectl jboss-cli -p domain-controller -f ./startup/dc/upgrade.cli
+* oc jboss-cli -p domain-controller -f ./startup/dc/upgrade.cli
 
 # Building your own EAP image
 
 N.B.: replace `quay.io/jdenise` with the repo where you want to push the images`.
 N.B: If building and pushing your own images, you will need to update the pods resources that reference the images.
 
-* `cd container/images/eap8-domain-openjdk21-openshift/`
-* `podman build -t quay.io/jdenise/jboss-eap8-domain-openjdk21-openshift:latest .`
+* `cd container/images/eap8-domain-openjdk17-openshift/`
+* `podman build -t quay.io/jdenise/jboss-eap8-domain-openjdk17-openshift:latest .`
 
 
 # Virtual machine demo
