@@ -1,0 +1,72 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: '1'
+    image.openshift.io/triggers: |-
+      [
+        {
+          "from":{
+            "kind":"ImageStreamTag",
+            "name":"jboss-eap8-domain-openjdk17-openshift:latest"
+          },
+          "fieldPath":"spec.template.spec.containers[0].image"
+        }
+      ]
+  name: domain-mode-dc
+  labels:
+    app.kubernetes.io/instance: domain-mode-dc
+    app.kubernetes.io/name: domain-mode-ha-dc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: domain-mode-dc
+      app.kubernetes.io/name: domain-mode-dc
+      app: domain-controller
+  template:
+    metadata:
+      name: domain-mode-dc
+      labels:
+        app.kubernetes.io/instance: domain-mode-dc
+        app.kubernetes.io/name: domain-mode-dc
+        app: domain-controller
+    spec:
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: domain-mode-dc
+          env:
+            - name: TERM
+              value: xterm
+            - name: JBOSS_EAP_DOMAIN_HOST_CONFIG
+              value: my-host-primary.xml
+            - name: JBOSS_EAP_DOMAIN_HOST_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: JBOSS_EAP_DOMAIN_DOMAIN_CONFIG
+              value: openshift-domain.xml
+            - name: JBOSS_EAP_DOMAIN_USER
+              value: demo
+            - name: JBOSS_EAP_DOMAIN_PASSWORD
+              value: demo
+            - name: JBOSS_EAP_DOMAIN_DOMAIN_INIT_PATH
+              value: /tmp/domain-init
+          ports:
+            - containerPort: 9990
+              protocol: TCP
+          imagePullPolicy: Always
+          terminationMessagePolicy: File
+          image: 'jboss-eap8-domain-openjdk17-openshift:latest'
+          volumeMounts:
+           - mountPath: /tmp/domain-init
+             name: dc-init-volume
+      volumes:
+      - name: dc-init-volume
+        persistentVolumeClaim:
+            claimName: dc-setup-volume
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
