@@ -108,6 +108,6 @@ spec:
           secret:
             secretName: hc-setup
   strategy:
-     type: RollingUpdate
+     type: Recreate
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
