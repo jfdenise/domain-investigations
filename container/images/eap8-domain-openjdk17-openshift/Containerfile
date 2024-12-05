@@ -1,7 +1,7 @@
 FROM registry.redhat.io/jboss-eap-8/eap8-openjdk17-builder-openshift-rhel8:latest AS builder
 
 # Set up environment variables for provisioning.
-ENV GALLEON_PROVISION_CHANNELS org.jboss.eap.channels:eap-8.0
+ENV GALLEON_PROVISION_CHANNELS org.jboss.eap.channels:eap-8.0:1.3.1.GA-redhat-00001
 ENV GALLEON_USE_LOCAL_FILE true
 
 # Workaround https://issues.redhat.com/browse/JBEAP-27755
