@@ -13,29 +13,28 @@ metadata:
           "fieldPath":"spec.template.spec.containers[0].image"
         }
       ]
-  name: domain-mode-ha-app
+  name: domain-mode-db-app
   labels:
-    app.kubernetes.io/instance: domain-mode-ha-app
-    app.kubernetes.io/name: domain-mode-ha-app
+    app.kubernetes.io/instance: domain-mode-db-app
+    app.kubernetes.io/name: domain-mode-db-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/instance: domain-mode-ha-app
-      app.kubernetes.io/name: domain-mode-ha-app
+      app.kubernetes.io/instance: domain-mode-db-app
+      app.kubernetes.io/name: domain-mode-db-app
   template:
     metadata:
-      name: domain-mode-ha-app
+      name: domain-mode-db-app
       labels:
-        app.kubernetes.io/instance: domain-mode-ha-app
-        app.kubernetes.io/name: domain-mode-ha-app
-        domain.member: demo
-        app: hc-ha-openshift
+        app.kubernetes.io/instance: domain-mode-db-app
+        app.kubernetes.io/name: domain-mode-db-app
+        app: hc-db-openshift
     spec:
       containers:
         - resources: {}
           terminationMessagePath: /dev/termination-log
-          name: domain-mode-ha-app
+          name: domain-mode-db-app
           livenessProbe:
           exec:
             command:
@@ -59,17 +58,13 @@ spec:
               initialDelaySeconds: 10
           env:
             - name: JBOSS_EAP_DOMAIN_HOST_CONFIG
-              value: my-host-ha.xml
+              value: my-host.xml
             - name: JBOSS_EAP_DOMAIN_HOST_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
             - name: TERM
               value: xterm
-            - name: KUBERNETES_NAMESPACE
-              value: jdenise-dev
-            - name: OPENSHIFT_DNS_PING_SERVICE_NAME
-              value: ping-service
             - name: JBOSS_EAP_DOMAIN_PRIMARY_ADDRESS
               value: domain-controller
             - name: JBOSS_EAP_DOMAIN_USER
@@ -83,6 +78,19 @@ spec:
               value: server-one
             - name: AB_PROMETHEUS_ENABLE
               value: "true"
+            # Env vars to connect to PostgreSQL DB
+            - name: POSTGRESQL_DATABASE
+              value: todos-db
+            - name: POSTGRESQL_USER
+              value: todos-db
+            - name: POSTGRESQL_PASSWORD
+              value: todos-db
+            - name: POSTGRESQL_DATASOURCE
+              value: ToDos
+            - name: POSTGRESQL_SERVICE_HOST
+              value: database-server
+            - name: POSTGRESQL_SERVICE_PORT
+              value: "5432"
           ports:
             - containerPort: 8080
               protocol: TCP

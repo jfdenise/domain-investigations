@@ -33,8 +33,8 @@ A demo that runs:
   - oc create -f domain-controller-service.yaml
   - oc create -f domain-ping-service.yaml
   - oc create -f kubernetes-dc-pod.yaml
-  - oc create -f host-controller-service.yaml
-  - oc create -f host-controller-route.yaml
+  - oc create -f db-service.yaml
+  - oc create -f db-route.yaml
   - oc create -f kubernetes-hc-pod.yaml
   - oc create -f ha-service.yaml
   - oc create -f ha-route.yaml

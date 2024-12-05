@@ -1,12 +1,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: host-controller
+  name: db-service
 spec:
   ipFamilies:
     - IPv4
   ports:
-    - name: host-controller-8080
+    - name: db-service-8080
       protocol: TCP
       port: 8080
       targetPort: 8080
@@ -15,5 +15,5 @@ spec:
   ipFamilyPolicy: SingleStack
   sessionAffinity: None
   selector:
-    app: secondary-openshift
+    app: hc-db-openshift
 
