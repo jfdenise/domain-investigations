@@ -8,7 +8,7 @@ metadata:
         {
           "from":{
             "kind":"ImageStreamTag",
-            "name":"jboss-eap8-domain-openjdk17-openshift:latest"
+            "name":"jboss-eap8-domain-openjdk17-openshift:hc-latest"
           },
           "fieldPath":"spec.template.spec.containers[0].image"
         }
@@ -91,7 +91,7 @@ spec:
               name: prometheus
           imagePullPolicy: Always
           terminationMessagePolicy: File
-          image: 'jboss-eap8-domain-openjdk17-openshift:latest'
+          image: 'jboss-eap8-domain-openjdk17-openshift:hc-latest'
           volumeMounts:
            - mountPath: /tmp/domain-init
              name: hc-init-secret

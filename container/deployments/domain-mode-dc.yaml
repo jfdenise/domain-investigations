@@ -8,7 +8,7 @@ metadata:
         {
           "from":{
             "kind":"ImageStreamTag",
-            "name":"jboss-eap8-domain-openjdk17-openshift:latest"
+            "name":"jboss-eap8-domain-openjdk17-openshift:dc-latest"
           },
           "fieldPath":"spec.template.spec.containers[0].image"
         }
@@ -16,7 +16,7 @@ metadata:
   name: domain-mode-dc
   labels:
     app.kubernetes.io/instance: domain-mode-dc
-    app.kubernetes.io/name: domain-mode-ha-dc
+    app.kubernetes.io/name: domain-mode-dc
 spec:
   replicas: 1
   selector:
@@ -58,7 +58,7 @@ spec:
               protocol: TCP
           imagePullPolicy: Always
           terminationMessagePolicy: File
-          image: 'jboss-eap8-domain-openjdk17-openshift:latest'
+          image: 'jboss-eap8-domain-openjdk17-openshift:dc-latest'
           volumeMounts:
            - mountPath: /tmp/domain-init
              name: dc-init-volume

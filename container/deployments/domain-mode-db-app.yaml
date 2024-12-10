@@ -8,7 +8,7 @@ metadata:
         {
           "from":{
             "kind":"ImageStreamTag",
-            "name":"jboss-eap8-domain-openjdk17-openshift:latest"
+            "name":"jboss-eap8-domain-openjdk17-openshift:hc-latest"
           },
           "fieldPath":"spec.template.spec.containers[0].image"
         }
@@ -36,20 +36,20 @@ spec:
           terminationMessagePath: /dev/termination-log
           name: domain-mode-db-app
           livenessProbe:
-          exec:
-            command:
-            - /bin/bash
-            - -c
-            - /opt/server/bin/launch/http-probe.sh
-          initialDelaySeconds: 60
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - /opt/server/bin/launch/http-probe.sh
+            initialDelaySeconds: 11
           startupProbe:
             exec:
               command:
               - /bin/bash
               - -c
               - /opt/server/bin/launch/http-probe.sh
-            initialDelaySeconds: 60
-            readinessProbe:
+            initialDelaySeconds: 11
+          readinessProbe:
               exec:
                 command:
                 - /bin/bash
@@ -99,7 +99,7 @@ spec:
               name: prometheus
           imagePullPolicy: Always
           terminationMessagePolicy: File
-          image: 'jboss-eap8-domain-openjdk17-openshift:latest'
+          image: 'jboss-eap8-domain-openjdk17-openshift:hc-latest'
           volumeMounts:
            - mountPath: /tmp/domain-init
              name: hc-init-secret
