@@ -1,0 +1,3 @@
+embed-host-controller --std-out=echo --domain-config=openshift-domain.xml --host-config=my-host-primary.xml
+ /host=${env.JBOSS_EAP_DOMAIN_HOST_NAME}/core-service=management/management-interface=http-interface:write-attribute(name=allowed-origins,value=[${env.JBOSS_EAP_DOMAIN_WEB_CONSOLE_ROUTE}])
+stop-embedded-host-controller

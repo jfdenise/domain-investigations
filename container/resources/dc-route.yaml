@@ -1,0 +1,14 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: dc-route
+spec:
+  to:
+    kind: Service
+    name: domain-controller
+    weight: 100
+  port:
+    targetPort: domain-controller-9990
+  tls:
+    termination: edge
+  wildcardPolicy: None

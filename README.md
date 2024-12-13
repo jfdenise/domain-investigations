@@ -17,29 +17,41 @@ A demo that runs:
 
 * Persistent Volume for DC deployments and configuration
 
-  - cd container/pods
+  - cd container/resources
   - oc create -f dc-persistent-volume.yaml
-  - oc create -f kubernetes-dc-pod.yaml
-  - oc rsync startup/dc/v1/ domain-controller:/tmp/domain-init
-  - oc delete pod domain-controller
+  - oc create -f domain-mode-dc.yaml
+  - oc rsync startup/dc/v1/  domain-mode-dc-<pod suffix>:/tmp/domain-init
+  - oc delete deployment domain-mode-dc
 
 * HC configuration
 
   - oc create secret generic hc-setup --from-file=startup/hc
 
-* Create the EAP server resources
+* Import the images
 
-  - cd container/pods
+  - oc import-image jboss-eap8-domain-openjdk17-openshift:6.0-update3.1 --from=quay.io/jdenise/jboss-eap8-domain-openjdk17-openshift:6.0-update3.1 --confirm
+  - oc import-image jboss-eap8-domain-openjdk17-openshift:4.0 --from=quay.io/jdenise/jboss-eap8-domain-openjdk17-openshift:4.0 --confirm
+  - oc tag jboss-eap8-domain-openjdk17-openshift:4.0 jboss-eap8-domain-openjdk17-openshift:hc-latest
+  - oc tag jboss-eap8-domain-openjdk17-openshift:4.0 jboss-eap8-domain-openjdk17-openshift:dc-latest
+  - oc set image-lookup jboss-eap8-domain-openjdk17-openshift
+
+* Create the Openshift resources
+
   - oc create -f domain-controller-service.yaml
   - oc create -f domain-ping-service.yaml
-  - oc create -f kubernetes-dc-pod.yaml
   - oc create -f db-service.yaml
   - oc create -f db-route.yaml
-  - oc create -f kubernetes-hc-pod.yaml
+  - oc create -f dc-route.yaml
   - oc create -f ha-service.yaml
   - oc create -f ha-route.yaml
-  - oc create -f kubernetes-hc-ha-pod1.yaml
-  - oc create -f kubernetes-hc-ha-pod2.yaml
+
+* Note the value of the dc-route and set it in deployments/domain-mode-dc.yaml (env var JBOSS_EAP_DOMAIN_WEB_CONSOLE_ROUTE)
+
+* Start the domain
+
+ - oc create -f domain-mode-dc.yaml
+ - oc create -f domain-mode-ha-app.yaml
+ - oc create -f domain-mode-db-app.yaml 
 
 * To access the non HA running applications:
 
@@ -60,9 +72,18 @@ N.B.: You can kill one of the 2 ha pods, the session is persisted.
 
 We are here updating the deployments, log to the DC, run the CLI script to update and reload the host controllers.
 
-* oc rsync startup/dc/v2/ domain-controller:/tmp/domain-init
+* oc rsync startup/dc/v2/ domain-mode-dc-<pod suffix>:/tmp/domain-init
 * install the cli plugin for kubectl: https://github.com/jmesnil/kubectl-jboss-cli/tree/main
-* oc jboss-cli -p domain-controller -f ./startup/dc/upgrade.cli
+* oc jboss-cli -p domain-mode-dc-<pod suffix> -f ./startup/dc/upgrade.cli
+
+# Updating the images
+
+For the Rolling Upgrade update demo, call:
+
+* oc tag jboss-eap8-domain-openjdk17-openshift:6.0-update3.1 jboss-eap8-domain-openjdk17-openshift:dc-latest
+* oc tag jboss-eap8-domain-openjdk17-openshift:6.0-update3.1 jboss-eap8-domain-openjdk17-openshift:hc-latest
+
+The upgrade will be automatically handled. You can see the pods being killed in turn.
 
 # Building your own EAP image
 

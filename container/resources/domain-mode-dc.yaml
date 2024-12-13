@@ -53,6 +53,8 @@ spec:
               value: demo
             - name: JBOSS_EAP_DOMAIN_DOMAIN_INIT_PATH
               value: /tmp/domain-init
+            - name: JBOSS_EAP_DOMAIN_WEB_CONSOLE_ROUTE
+              value: https://dc-route-jdenise-dev.apps.sandbox-m3.1530.p1.openshiftapps.com
           ports:
             - containerPort: 9990
               protocol: TCP
